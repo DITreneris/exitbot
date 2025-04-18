@@ -88,8 +88,9 @@ class Response(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     interview_id: Mapped[int] = mapped_column(ForeignKey("interviews.id"))
     question_id: Mapped[Optional[int]] = mapped_column(ForeignKey("questions.id"), nullable=True)
-    employee_message: Mapped[str] = mapped_column(Text)
-    bot_response: Mapped[str] = mapped_column(Text)
+    # Allow nulls for messages, as a turn might only have one side (e.g., initial bot message)
+    employee_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    bot_response: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     sentiment: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     

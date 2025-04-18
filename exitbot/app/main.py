@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
@@ -17,6 +17,19 @@ from exitbot.app.db.base import Base
 from exitbot.app.db.init import init_db
 from exitbot.app.api import api_router
 from exitbot.app.core.logging import setup_logging
+
+# --- Load .env file --- 
+# from dotenv import load_dotenv # Removed import
+import os
+
+# load_dotenv() searches for .env in current and parent directories
+# This is generally preferred unless you have a very non-standard setup.
+# load_dotenv() # Removed call from main.py (should be handled by config now)
+# print("Attempted to load .env file.") # Removed print statement
+
+# --- End .env loading ---
+
+# Now import modules that rely on environment variables
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

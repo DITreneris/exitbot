@@ -12,7 +12,7 @@ client = TestClient(app)
 def test_login_success(client, test_admin):
     """Test user login endpoint with valid credentials"""
     response = client.post(
-        "/api/auth/login/access-token",
+        "/api/auth/login",
         data={"username": test_admin.email, "password": "AdminPassword1"}
     )
     
@@ -25,8 +25,8 @@ def test_login_success(client, test_admin):
 def test_login_invalid_password(client, test_admin):
     """Test login with invalid password"""
     response = client.post(
-        "/api/auth/login/access-token",
-        data={"username": "admin@example.com", "password": "wrong_password"}
+        "/api/auth/login",
+        data={"username": test_admin.email, "password": "wrong_password"}
     )
     
     assert response.status_code == 401
@@ -35,7 +35,7 @@ def test_login_invalid_password(client, test_admin):
 def test_login_user_not_found(client):
     """Test login with non-existent user"""
     response = client.post(
-        "/api/auth/login/access-token",
+        "/api/auth/login",
         data={"username": "nonexistent@example.com", "password": "password"}
     )
     

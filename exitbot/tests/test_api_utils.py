@@ -115,7 +115,7 @@ def test_login_success(client: TestClient, test_db: Session, test_employee: User
             # Assuming get_db is now in exitbot.app.dependencies or exitbot.app.db.base
             with patch("exitbot.app.db.base.get_db", return_value=test_db): # Updated patch target
                  response = client.post(
-                    f"{settings.API_V1_PREFIX}/auth/login/access-token", # Corrected path
+                    f"{settings.API_V1_PREFIX}/auth/login", # Use the correct login path
                     data={"username": test_email, "password": test_password}
                  )
                  assert response.status_code == 200, response.text
@@ -132,7 +132,7 @@ def test_login_failure_wrong_password(client: TestClient, test_db: Session, test
         with patch("exitbot.app.core.security.verify_password", return_value=False):
             with patch("exitbot.app.db.base.get_db", return_value=test_db): # Updated patch target
                 response = client.post(
-                    f"{settings.API_V1_PREFIX}/auth/login/access-token", # Corrected path
+                    f"{settings.API_V1_PREFIX}/auth/login", # Use the correct login path
                     data={"username": test_email, "password": "wrongpassword"}
                 )
                 assert response.status_code == 401, response.text
@@ -144,7 +144,7 @@ def test_login_failure_user_not_found(client: TestClient, test_db: Session):
     with patch("exitbot.app.db.crud.user.get_user_by_email", return_value=None):
          with patch("exitbot.app.db.base.get_db", return_value=test_db): # Updated patch target
             response = client.post(
-                f"{settings.API_V1_PREFIX}/auth/login/access-token", # Corrected path
+                f"{settings.API_V1_PREFIX}/auth/login", # Use the correct login path
                 data={"username": "nonexistent@example.com", "password": "password"}
             )
             assert response.status_code == 401, response.text

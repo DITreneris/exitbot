@@ -46,7 +46,7 @@ class TestIntegration:
             "password": user_data["password"]
         }
             
-        login_response = client.post("/api/auth/login/access-token", data=login_payload)
+        login_response = client.post("/api/auth/login", data=login_payload)
         assert login_response.status_code == 200
             
         login_data = login_response.json()
@@ -389,7 +389,7 @@ class TestIntegration:
             "username": admin_email,
             "password": admin_data["password"]
         }
-        admin_login_response = client.post("/api/auth/login/access-token", data=admin_login_payload)
+        admin_login_response = client.post("/api/auth/login", data=admin_login_payload)
         assert admin_login_response.status_code == 200
         admin_token = admin_login_response.json()["access_token"]
             
@@ -424,7 +424,7 @@ class TestIntegration:
             "username": employee_email,
             "password": employee_data["password"]
         }
-        employee_login_response = client.post("/api/auth/login/access-token", data=employee_login_payload)
+        employee_login_response = client.post("/api/auth/login", data=employee_login_payload)
         assert employee_login_response.status_code == 200
         employee_token = employee_login_response.json()["access_token"]
                     

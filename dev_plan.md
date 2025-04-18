@@ -69,6 +69,7 @@ exitbot/
 - [x] Create configuration management with environment variables
 - [x] Setup basic logging system
 - [x] Initialize git repository
+  - [x] Initial commit pushed to `https://github.com/DITreneris/exitbot`
 
 #### Day 3-5: Database Implementation
 - [x] Define SQLAlchemy models:
@@ -141,10 +142,12 @@ exitbot/
 - [x] Validate data persistence
 - [x] Test report generation
 - [x] Verify authentication flows
+- [x] Final test suite run confirms 91/91 tests passing.
 
 #### Day 3-4: User Experience Refinement
 - [x] Improve error handling and resilience
 - [x] Implement TTL-based caching for performance
+- [x] Resolved all (4) pytest warnings (`PytestCollectionWarning`, `PytestReturnNotNoneWarning`) for a clean test suite.
 - [x] Enhance UI responsiveness
 - [x] Add loading indicators
 - [x] Review and improve accessibility

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
     summary="Get dashboard statistics",
     description="""
     Retrieve high-level statistics for the admin dashboard.
-    Only accessible to admin users.
+    # Only accessible to admin users. (Dependency Temporarily Removed for Debugging)
     """,
     response_description="Dashboard statistics",
     responses={
@@ -54,6 +54,27 @@ async def get_dashboard_statistics(
     Returns:
     - DashboardStatistics object with counts and metrics
     """
+    
+    # --- REMOVED TEMPORARY DEBUG Block ---
+    # logger.warning("DEBUG: Returning hardcoded statistics data (Admin check disabled)")
+    # statistics = dashboard_schemas.DashboardStatistics(
+    #     total_users=10, # Dummy data
+    #     total_interviews=5, # Dummy data
+    #     recent_interviews=2, # Dummy data
+    #     interviews_by_status={
+    #         "scheduled": 1,
+    #         "in_progress": 1,
+    #         "completed": 2,
+    #         "cancelled": 1
+    #     }, # Dummy data
+    #     completion_rate=40.0, # Dummy data (2 completed / 5 total)
+    #     average_sentiment=0.5, # Dummy data (or None)
+    #     time_range=time_range
+    # )
+    # return statistics
+    # --- END TEMPORARY DEBUG ---
+
+    # --- Begin Restoring Original Code ---
     # Calculate date range
     today = datetime.utcnow()
     if time_range == "week":
@@ -90,16 +111,17 @@ async def get_dashboard_statistics(
     else:
         completion_rate = 0
     
-    # Calculate average sentiment for interviews completed within the time range
-    # Query the Response table, joining with Interview, filtering by date and where sentiment is not None
-    avg_sentiment_query = select(func.avg(cast(models.Response.sentiment, Float))) \
-        .join(models.Interview, models.Response.interview_id == models.Interview.id) \
-        .filter(
-            models.Interview.created_at >= start_date,
-            models.Response.sentiment.isnot(None)
-        )
-    average_sentiment = db.execute(avg_sentiment_query).scalar_one_or_none()
-    
+    # Calculate average sentiment using database AVG function
+    avg_sentiment = db.query(func.avg(models.Response.sentiment)).join(
+        models.Interview, models.Response.interview_id == models.Interview.id
+    ).filter(
+        models.Interview.created_at >= start_date # Apply the date range filter
+    ).scalar()
+
+    # Convert to float if not None
+    if avg_sentiment is not None:
+        avg_sentiment = float(avg_sentiment)
+        
     # Construct response
     statistics = dashboard_schemas.DashboardStatistics(
         total_users=total_users,
@@ -107,12 +129,27 @@ async def get_dashboard_statistics(
         recent_interviews=recent_interviews,
         interviews_by_status=interviews_by_status,
         completion_rate=round(completion_rate, 2),
-        average_sentiment=round(average_sentiment, 2) if average_sentiment is not None else None,
+        # Use the calculated avg_sentiment, handling None during rounding
+        average_sentiment=round(avg_sentiment, 2) if avg_sentiment is not None else None,
         time_range=time_range
     )
     
     logger.info(f"Dashboard statistics retrieved by admin {current_user.id}")
     return statistics
+    # --- End Original Code ---
+
+    # --- REMOVED Temporary return block ---
+    # temp_statistics = dashboard_schemas.DashboardStatistics(
+    #     total_users=total_users, # Calculated
+    #     total_interviews=total_interviews, # Calculated
+    #     recent_interviews=recent_interviews, # Calculated
+    #     interviews_by_status=interviews_by_status, # Calculated
+    #     completion_rate=0.0, # Placeholder
+    #     average_sentiment=None, # Placeholder
+    #     time_range=time_range
+    # )
+    # logger.info(f"Dashboard statistics retrieved by admin {current_user.id} (Partial Data)")
+    # return temp_statistics
 
 
 @router.get(

@@ -9,25 +9,25 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from ...schemas.user import UserInDB  # Direct import
-from ...schemas.token import Token  # Direct import
+from ...schemas.token import Token, EmployeeAccessToken, EmployeeAccessRequest  # Direct import
 from ...core import security  # Corrected relative import
 from ...core.config import settings  # Corrected relative import
 from ...db.database import get_db  # Corrected: Use database.py
 from ...db.models import User  # Correct path to db models
 from ..deps import get_current_active_user # Changed to relative import
 from ...db import crud # Added import for crud
-from ...core.security import verify_password # Added import for verify_password
+from ...core.security import verify_password, create_employee_token # Added import for verify_password and employee token creator
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 @router.post(
-    "/login/access-token", 
-    response_model=Token,  # Updated reference
-    summary="Login and get access token",
+    "/login", # Changed path to match frontend call
+    response_model=Token,
+    summary="Login and get access token for HR/Admin users",
     description="""
-    OAuth2 compatible token login, get an access token for future requests.
+    OAuth2 compatible token login for registered HR/Admin users.
     Requires valid email and password credentials.
     """,
     response_description="Access token for authentication",
@@ -51,38 +51,75 @@ async def login_access_token(
     Returns:
         Access token
     """
-    # OAuth2 uses username, but we're using email
     email = form_data.username
     password = form_data.password
     
-    # Fetch user by email
     user = crud.get_user_by_email(db, email=email)
     
-    # Verify user existence and password
-    if not user or not verify_password(password, user.hashed_password):
-        logger.warning(f"Failed login attempt for email: {email}")
+    if not user or not user.hashed_password or not verify_password(password, user.hashed_password):
+        logger.warning(f"Failed login attempt for HR/Admin email: {email}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Update last login time (optional, consider adding this)
-    # crud.update_user_last_login(db, user_id=user.id)
-        
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
-        subject_email=user.email,  # Pass email as subject
-        is_admin=user.is_admin,    # Pass is_admin flag
+        subject_email=user.email,
+        is_admin=user.is_admin,
         expires_delta=access_token_expires
     )
     
-    logger.info(f"User {user.id} ({user.email}) logged in successfully")
+    logger.info(f"Admin/HR User {user.id} ({user.email}) logged in successfully")
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post(
-    "/login/test-token", 
-    response_model=UserInDB,  # Updated reference
+    "/employee-access",
+    response_model=EmployeeAccessToken,
+    summary="Get access token for an employee to start an interview",
+    description="""
+    Provides an access token for a departing employee based on their details.
+    If the employee doesn't exist in the system, a user record is created.
+    This token allows them to access the interview interface.
+    """,
+    response_description="Access token and employee ID",
+    responses={
+        200: {"description": "Successful access, token and ID returned"},
+        400: {"description": "Invalid input data"},
+        500: {"description": "Internal server error during user lookup/creation"}
+    }
+)
+async def get_employee_access_token(
+    employee_data: EmployeeAccessRequest,
+    db: Session = Depends(get_db)
+) -> EmployeeAccessToken:
+    """
+    Provides an access token for an employee, creating them if necessary.
+    """
+    try:
+        logger.info(f"Attempting employee access for email: {employee_data.email}")
+        # Get or create the employee user record
+        employee = crud.get_or_create_employee(db=db, employee_data=employee_data)
+
+        # Generate a specific, potentially short-lived token for the employee
+        access_token = create_employee_token(email=employee.email)
+
+        logger.info(f"Employee access token generated for user ID: {employee.id}")
+        return EmployeeAccessToken(
+            access_token=access_token,
+            employee_id=employee.id
+        )
+    except Exception as e:
+        logger.error(f"Error generating employee access token for {employee_data.email}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not process employee access request."
+        )
+
+@router.post(
+    "/test-token",
+    response_model=UserInDB,
     summary="Test access token",
     description="""
     Test access token validity and get current user information.
@@ -94,7 +131,7 @@ async def login_access_token(
         401: {"description": "Invalid or expired token"}
     }
 )
-async def test_token(current_user: UserInDB = Depends(get_current_active_user)):
+async def test_token(current_user: User = Depends(get_current_active_user)):
     """
     Test access token and get current user
     

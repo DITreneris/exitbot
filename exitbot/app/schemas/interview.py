@@ -4,7 +4,41 @@ from enum import Enum
 from pydantic import BaseModel, Field, field_validator, model_validator
 from .response import Response
 
-# Question schemas
+# --- Message Schemas (Moved Up) ---
+class MessageRole(str, Enum):
+    """Message role types."""
+    USER = "user"
+    ASSISTANT = "assistant"
+    SYSTEM = "system"
+
+class MessageCreate(BaseModel):
+    """Schema for creating a new message."""
+    content: str = Field(..., description="Message content", min_length=1)
+    role: MessageRole = Field(
+        default=MessageRole.USER,
+        description="Role of the message sender (user, assistant, system)"
+    )
+    metadata: Optional[Dict[str, Any]] = Field(
+        default=None, 
+        description="Optional metadata for the message"
+    )
+
+class Message(MessageCreate):
+    """Schema for a message with additional fields."""
+    id: int = Field(..., description="Unique message ID")
+    interview_id: int = Field(..., description="ID of the interview this message belongs to")
+    created_at: datetime = Field(..., description="Time the message was created")
+    updated_at: Optional[datetime] = Field(None, description="Time the message was last updated")
+    
+    model_config = {"from_attributes": True}
+
+class MessageList(BaseModel):
+    """Schema for a list of messages."""
+    total: int = Field(..., description="Total number of messages")
+    items: List[Message] = Field(..., description="List of messages")
+
+
+# --- Question Schemas ---
 class QuestionBase(BaseModel):
     text: str
     order_num: Optional[int] = None
@@ -19,7 +53,7 @@ class Question(QuestionBase):
     
     model_config = {"from_attributes": True}
 
-# Response schemas
+# --- Response Schemas ---
 class ResponseBase(BaseModel):
     interview_id: int
     question_id: Optional[int]
@@ -36,7 +70,7 @@ class Response(ResponseBase):
     
     model_config = {"from_attributes": True}
 
-# Interview schemas
+# --- Interview Schemas ---
 class InterviewStatus(str, Enum):
     """Valid interview status values."""
     SCHEDULED = "scheduled"
@@ -130,6 +164,10 @@ class Interview(InterviewInDBBase):
     """Schema for returning interview data to the client."""
     responses: List[Response] = Field([], description="List of responses associated with the interview")
 
+class InterviewWithInitialMessage(Interview):
+    """Schema for returning interview data along with the initial bot message."""
+    initial_message: Optional[Message] = Field(None, description="The initial message/question from the bot")
+
 class InterviewInDB(InterviewInDBBase):
     """Schema representing the full interview data as stored in the database."""
     pass
@@ -151,39 +189,8 @@ class InterviewList(BaseModel):
 class InterviewDetail(Interview):
     responses: List[Response] = []
 
-# Message schema for interaction
-class MessageRole(str, Enum):
-    """Message role types."""
-    USER = "user"
-    ASSISTANT = "assistant"
-    SYSTEM = "system"
-
-class MessageCreate(BaseModel):
-    """Schema for creating a new message."""
-    content: str = Field(..., description="Message content", min_length=1)
-    role: MessageRole = Field(
-        default=MessageRole.USER,
-        description="Role of the message sender (user, assistant, system)"
-    )
-    metadata: Optional[Dict[str, Any]] = Field(
-        default=None, 
-        description="Optional metadata for the message"
-    )
-
-class Message(MessageCreate):
-    """Schema for a message with additional fields."""
-    id: int = Field(..., description="Unique message ID")
-    interview_id: int = Field(..., description="ID of the interview this message belongs to")
-    created_at: datetime = Field(..., description="Time the message was created")
-    updated_at: Optional[datetime] = Field(None, description="Time the message was last updated")
-    
-    model_config = {"from_attributes": True}
-
-class MessageList(BaseModel):
-    """Schema for a list of messages."""
-    total: int = Field(..., description="Total number of messages")
-    items: List[Message] = Field(..., description="List of messages")
-
+# --- Interview Interaction Schemas (Response/Question/Completion) ---
+# These might reference Question, Message, etc. which are defined above
 class InterviewResponse(BaseModel):
     response: str
     current_question: Optional[Question] = None
@@ -264,19 +271,4 @@ class TemplateUpdate(BaseModel):
 class TemplateList(BaseModel):
     """Schema for a list of templates."""
     total: int = Field(..., description="Total number of templates")
-    items: List[InterviewTemplate] = Field(..., description="List of templates")
-
-class Message(BaseModel):
-    """Schema for a message in an interview"""
-    interview_id: int
-    message: str
-    question_id: Optional[int] = None
-
-class InterviewResponse(BaseModel):
-    """Schema for an interview response"""
-    response: str
-    current_question: Optional[dict] = None
-    is_complete: bool = False
-
-class InterviewComplete(BaseModel):
-    interview_id: int 
+    items: List[InterviewTemplate] = Field(..., description="List of templates") 

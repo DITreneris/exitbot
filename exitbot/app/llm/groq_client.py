@@ -95,6 +95,69 @@ class GroqClient(BaseLLMClient):
             logger.error(f"Error sending request to Groq API: {str(e)}")
             raise
     
+    def generate_response(self, prompt: str) -> Dict[str, Any]:
+        """Generate a response for a single prompt string."""
+        # This method might be less suitable for back-and-forth chat.
+        # Keeping it for potential other uses (like sentiment analysis).
+        messages = [{"role": "user", "content": prompt}]
+        return self._send_chat_request(messages=messages)
+
+    def chat(self, messages: List[Dict[str, str]], max_tokens: Optional[int] = None) -> str:
+        """Send chat messages to Groq API and get a response string."""
+        # This method aligns better with the chat completion pattern.
+        response_data = self._send_chat_request(messages=messages, max_tokens=max_tokens)
+        # Extract just the content string
+        return response_data.get("response", "")
+        
+    def _send_chat_request(self, messages: List[Dict[str, str]], max_tokens: Optional[int] = None) -> Dict[str, Any]:
+        """Internal method to send chat completion request to Groq API."""
+        if not self.api_key:
+            logger.error("Groq API key is required but not provided.")
+            raise ValueError("Groq API key is required")
+        
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        # Prepare data payload using the provided messages list
+        data = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": 0.7, # Consider making this configurable
+            "max_tokens": max_tokens or settings.LLM_MAX_TOKENS
+        }
+        
+        try:
+            response = requests.post(
+                self.api_url,
+                headers=headers,
+                json=data,
+                timeout=self.timeout
+            )
+            response.raise_for_status() # Check for HTTP errors
+            response_data = response.json()
+            
+            if "choices" not in response_data or not response_data["choices"]:
+                logger.error("Invalid response structure from Groq API: %s", response_data)
+                raise ValueError("Invalid response structure from Groq API")
+            
+            content = response_data["choices"][0].get("message", {}).get("content", "")
+            if not content:
+                logger.warning("Groq API returned empty message content.")
+                
+            # Return the structure expected by the calling code (or adjust calling code)
+            # Let's return a dict similar to generate_response for now, 
+            # although the new chat() method just returns the string.
+            return {"response": content}
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error sending request to Groq API: {str(e)}")
+            raise # Re-raise the exception to be handled by the caller
+        except Exception as e:
+             logger.error(f"Unexpected error during Groq API request: {str(e)}", exc_info=True)
+             raise # Re-raise other exceptions
+
     def analyze_sentiment(self, text: str) -> float:
         """
         Analyze sentiment of text using Groq API

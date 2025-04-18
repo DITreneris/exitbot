@@ -86,47 +86,53 @@ def client(test_db: Session):
 @pytest.fixture(scope="function") # Scope changed
 def test_admin(test_db: Session) -> User: # Use test_db session, removed client dependency
     """Create a test admin user."""
-    from exitbot.app.db.crud import create_user
+    from exitbot.app.db.crud.user import create_user
     # Use a unique email for each function scope
     email = f"admin_{datetime.now().timestamp()}@example.com"
-    user_data = {
+    user_data_dict = {
         "email": email,
         "password": "AdminPassword1", # Ensure password meets requirements
         "full_name": "Test Admin",
         "is_admin": True,
         "department": "IT"
     }
-    user = create_user(db=test_db, user_data=user_data)
+    # Create UserCreate schema instance
+    user_in = UserCreate(**user_data_dict)
+    user = create_user(db=test_db, user_in=user_in)
     return user # Return the actual DB object
 
 @pytest.fixture(scope="function") # Scope changed
 def test_hr(test_db: Session) -> User: # Use test_db session, removed client dependency
     """Create a test HR user."""
-    from exitbot.app.db.crud import create_user
+    from exitbot.app.db.crud.user import create_user
     email = f"hr_{datetime.now().timestamp()}@example.com"
-    user_data = {
+    user_data_dict = {
         "email": email,
         "password": "HrPassword1", # Ensure password meets requirements
         "full_name": "Test HR",
         "is_admin": True, # Assuming HR maps to is_admin=True
         "department": "HR"
     }
-    user = create_user(db=test_db, user_data=user_data)
+    # Create UserCreate schema instance
+    user_in = UserCreate(**user_data_dict)
+    user = create_user(db=test_db, user_in=user_in)
     return user
 
 @pytest.fixture(scope="function") # Scope changed
 def test_employee(test_db: Session) -> User: # Use test_db session, removed client dependency
     """Create a test employee user."""
-    from exitbot.app.db.crud import create_user
+    from exitbot.app.db.crud.user import create_user
     email = f"employee_{datetime.now().timestamp()}@example.com"
-    user_data = {
+    user_data_dict = {
         "email": email,
         "password": "EmpPassword1", # Ensure password meets requirements
         "full_name": "Test Employee",
         "is_admin": False,
         "department": "Sales"
     }
-    user = create_user(db=test_db, user_data=user_data)
+    # Create UserCreate schema instance
+    user_in = UserCreate(**user_data_dict)
+    user = create_user(db=test_db, user_in=user_in)
     return user
 
 @pytest.fixture(scope="function") # Scope changed

@@ -47,6 +47,29 @@ class MockLLMClient:
             "duration": 0.5
         }
     
+    def chat(self, messages: List[Dict[str, str]], max_tokens: Optional[int] = None) -> str:
+        """Mock chat completion method."""
+        # Simulate a simple response based on the last user message, or a generic first message.
+        time.sleep(0.2) # Simulate some delay
+        
+        last_user_message = ""
+        if messages:
+            # Find the last message with role 'user'
+            for msg in reversed(messages):
+                if msg.get("role") == "user":
+                    last_user_message = msg.get("content", "")
+                    break
+        
+        if "first question" in last_user_message.lower():
+            return "Welcome to the Mock Exit Interview! What was your primary reason for leaving?"
+        elif last_user_message:
+             # Simple echo for testing or a generic follow-up
+             # return f"Mock response to: '{last_user_message[:50]}...'"
+             return "Thank you for that information. Can you please elaborate further?"
+        else:
+            # If no user message found (e.g., initial call), return a default welcome
+            return "Welcome to the Mock Exit Interview! Please tell me about your experience." 
+
     def analyze_sentiment(self, text: str) -> float:
         """
         Analyze sentiment of text (mocked)

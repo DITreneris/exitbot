@@ -5,6 +5,12 @@ import os
 from typing import List, Optional
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings
+# from dotenv import load_dotenv # Removed explicit import
+
+# --- Explicitly load .env before BaseSettings reads it --- 
+# load_dotenv() # Removed explicit call
+# print("Attempted to load .env file from config.py") # Removed print statement
+# --- End .env loading --- 
 
 class Settings(BaseSettings):
     # API settings
@@ -43,8 +49,8 @@ class Settings(BaseSettings):
     
     model_config = {
         "case_sensitive": True,
-        "env_file": ".env",
-        "extra": "ignore"  # This allows extra fields in the environment
+        "env_file": ".env", # Use pydantic-settings built-in .env loading
+        "extra": "ignore"
     }
 
 settings = Settings() 

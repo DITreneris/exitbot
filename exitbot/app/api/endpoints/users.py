@@ -52,18 +52,19 @@ def create_user(
             detail="Email already registered",
         )
 
-    # Prepare data dict for crud.create_user, mapping schema fields to model fields
-    user_data_for_crud = {
-        "email": user_in.email,
-        "password": user_in.password, # crud function will hash it
-        "full_name": user_in.full_name,
-        # Map is_superuser (schema) to is_admin (model/crud expectation)
-        "is_admin": user_in.is_admin, 
-        "department": user_in.department,
-        # 'position' from schema is ignored as model/crud doesn't use it
-    }
+    # No need to create a separate dict, pass the schema directly
+    # user_data_for_crud = {
+    #     "email": user_in.email,
+    #     "password": user_in.password, # crud function will hash it
+    #     "full_name": user_in.full_name,
+    #     # Map is_superuser (schema) to is_admin (model/crud expectation)
+    #     "is_admin": user_in.is_admin, 
+    #     "department": user_in.department,
+    #     # 'position' from schema is ignored as model/crud doesn't use it
+    # }
     
-    db_user = crud.create_user(db=db, user_data=user_data_for_crud)
+    # Call the CRUD function with the UserCreate schema instance
+    db_user = crud.create_user(db=db, user_in=user_in)
     
     logger.info(f"New user created via CRUD: {db_user.id} ({db_user.email})")
     # Return the created user object (crud function already adds/commits/refreshes)
