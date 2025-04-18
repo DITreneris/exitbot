@@ -1,0 +1,18 @@
+# Test dependencies for ExitBot
+
+# Core pytest packages
+pytest==7.4.0
+pytest-cov==4.1.0
+pytest-html==3.2.0
+pytest-asyncio==0.21.1
+pytest-xdist==3.3.1
+
+# Mock and testing utilities
+requests-mock==1.11.0
+coverage==7.3.2
+
+# Other tools
+black==23.7.0
+mypy==1.5.1
+flake8==6.1.0
+isort==5.12.0 

@@ -1,0 +1,3 @@
+"""
+ExitBot application package
+""" 

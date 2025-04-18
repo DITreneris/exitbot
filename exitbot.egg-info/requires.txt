@@ -1,0 +1,17 @@
+fastapi==0.104.1
+uvicorn==0.23.2
+sqlalchemy==2.0.23
+pydantic==2.4.2
+pydantic-settings==2.0.2
+streamlit==1.28.0
+pytest==7.4.3
+httpx<0.26.0,>=0.25.2
+python-dotenv==1.0.0
+langchain==0.0.335
+psycopg2-binary==2.9.9
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+ollama==0.1.5
+requests==2.31.0
+cachetools==5.3.2
