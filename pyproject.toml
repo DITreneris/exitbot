@@ -1,0 +1,12 @@
+[tool.black]
+line-length = 88
+target-version = ['py39']
+
+[tool.mypy]
+python_version = "3.9"
+warnings = true
+ignore_missing_imports = true # Start permissive, can be tightened later
+# Consider adding specific module ignores if needed
+# e.g., [[tool.mypy.overrides]]
+# module = "some_library.*"
+# ignore_missing_imports = true

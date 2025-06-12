@@ -1,0 +1,1339 @@
+"""
+ExitBot Design System - Core design tokens and utilities
+
+This module defines the core design tokens (colors, typography, spacing) and 
+utility functions for consistent styling across the ExitBot applications.
+"""
+
+# ----- COLORS -----
+# Primary Colors
+PRIMARY_900 = "#1E3A8A"  # Deep blue - Primary actions, active states
+PRIMARY_800 = "#1E40AF"  # Standard blue - Primary buttons
+PRIMARY_700 = "#1D4ED8"  # Medium blue - Hover states
+PRIMARY_600 = "#2563EB"  # Light blue - Selected items
+PRIMARY_500 = "#3B82F6"  # Lighter blue - Progress bars, highlights
+PRIMARY_400 = "#60A5FA"  # Very light blue - Borders, minor UI elements
+PRIMARY_200 = "#BFDBFE"  # Soft blue - Light borders, backgrounds
+PRIMARY_100 = "#DBEAFE"  # Pale blue - Backgrounds, inactive states
+PRIMARY_50 = "#EFF6FF"   # Almost white blue - Subtle backgrounds
+
+# Neutral Colors
+NEUTRAL_900 = "#111827"  # Very dark gray - Main text, headings
+NEUTRAL_800 = "#1F2937"  # Dark gray - Secondary text
+NEUTRAL_700 = "#374151"  # Medium dark gray - Subheadings
+NEUTRAL_600 = "#4B5563"  # Medium gray - Body text
+NEUTRAL_500 = "#6B7280"  # Gray - Secondary information, placeholders
+NEUTRAL_400 = "#9CA3AF"  # Light gray - Disabled text, tertiary information
+NEUTRAL_300 = "#D1D5DB"  # Very light gray - Borders, dividers
+NEUTRAL_200 = "#E5E7EB"  # Almost white gray - Light borders, backgrounds
+NEUTRAL_100 = "#F3F4F6"  # Off-white - Card backgrounds, subtle highlights
+NEUTRAL_50 = "#F9FAFB"   # Nearly white - Page backgrounds
+
+# Semantic Colors
+SUCCESS_700 = "#047857"  # Dark green - Strong success elements
+SUCCESS_500 = "#10B981"  # Medium green - Success buttons, states
+SUCCESS_100 = "#D1FAE5"  # Light green - Success backgrounds
+
+WARNING_700 = "#B45309"  # Dark amber - Strong warning elements
+WARNING_500 = "#F59E0B"  # Medium amber - Warning indicators
+WARNING_100 = "#FEF3C7"  # Light amber - Warning backgrounds
+
+ERROR_700 = "#B91C1C"    # Dark red - Strong error elements
+ERROR_500 = "#EF4444"    # Medium red - Error states, alerts
+ERROR_100 = "#FEE2E2"    # Light red - Error backgrounds
+
+# ----- TYPOGRAPHY -----
+# Font Family
+FONT_FAMILY = "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif"
+
+# Font Sizes (in rem)
+FONT_SIZE_XS = "0.75rem"    # 12px - Small labels, footnotes
+FONT_SIZE_SM = "0.875rem"   # 14px - Secondary text, captions
+FONT_SIZE_BASE = "1rem"     # 16px - Body text
+FONT_SIZE_LG = "1.125rem"   # 18px - Large body text
+FONT_SIZE_XL = "1.25rem"    # 20px - Subheadings
+FONT_SIZE_2XL = "1.5rem"    # 24px - Section headings
+FONT_SIZE_3XL = "1.875rem"  # 30px - Page headings
+FONT_SIZE_4XL = "2.25rem"   # 36px - Major headings
+
+# Font Weights
+FONT_WEIGHT_NORMAL = "400"
+FONT_WEIGHT_MEDIUM = "500"
+FONT_WEIGHT_SEMIBOLD = "600"
+FONT_WEIGHT_BOLD = "700"
+
+# Line Heights
+LINE_HEIGHT_TIGHT = "1.25"
+LINE_HEIGHT_NORMAL = "1.5"
+LINE_HEIGHT_RELAXED = "1.75"
+
+# ----- SPACING -----
+# Base spacing unit: 4px (in rem)
+SPACING_0 = "0"
+SPACING_1 = "0.25rem"  # 4px
+SPACING_2 = "0.5rem"   # 8px
+SPACING_3 = "0.75rem"  # 12px
+SPACING_4 = "1rem"     # 16px
+SPACING_5 = "1.25rem"  # 20px
+SPACING_6 = "1.5rem"   # 24px
+SPACING_8 = "2rem"     # 32px
+SPACING_10 = "2.5rem"  # 40px
+SPACING_12 = "3rem"    # 48px
+SPACING_16 = "4rem"    # 64px
+SPACING_20 = "5rem"    # 80px
+SPACING_24 = "6rem"    # 96px
+
+# ----- BORDERS & SHADOWS -----
+BORDER_RADIUS_SM = "4px"
+BORDER_RADIUS_MD = "8px"
+BORDER_RADIUS_LG = "12px"
+BORDER_RADIUS_XL = "16px"
+BORDER_RADIUS_FULL = "9999px"
+
+SHADOW_SM = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+SHADOW_MD = "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+SHADOW_LG = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+
+# ----- UTILITY FUNCTIONS -----
+def get_base_css():
+    """
+    Returns the base CSS for the application, incorporating the design tokens
+    """
+    return f"""
+    <style>
+    /* Base styles and typography */
+    html, body, [class*="st-"] {{{{{{{{{{{{{{{{
+        font-family: {FONT_FAMILY};
+        background-color: {NEUTRAL_50};
+        color: {NEUTRAL_800};
+    }}}}}}}}}}}}}}}}
+
+    /* Typography */
+    h1, h2, h3 {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_900};
+        font-weight: {FONT_WEIGHT_BOLD};
+        letter-spacing: -0.025em;
+    }}}}}}}}}}}}}}}}
+
+    p, div {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_700};
+        line-height: {LINE_HEIGHT_NORMAL};
+    }}}}}}}}}}}}}}}}
+
+    /* Streamlit Buttons */
+    div.stButton > button {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_LG};
+        background-color: {PRIMARY_800};
+        color: #FFFFFF;
+        border: 1px solid {PRIMARY_800};
+        padding: {SPACING_3} {SPACING_4};
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        transition: all 0.2s ease;
+    }}}}}}}}}}}}}}}}
+
+    div.stButton > button:hover {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_700};
+        border-color: {PRIMARY_700};
+        color: #FFFFFF;
+    }}}}}}}}}}}}}}}}
+    
+    div.stButton > button:focus {{{{{{{{{{{{{{{{
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+    }}}}}}}}}}}}}}}}
+
+    /* Enhanced Error Container */
+    .error-container {{{{{{{{{{{{{{{{
+        background-color: {ERROR_100};
+        border: 1px solid {ERROR_500};
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_6};
+        margin-bottom: {SPACING_6};
+        display: flex;
+        gap: {SPACING_4};
+        align-items: flex-start;
+    }}}}}}}}}}}}}}}}
+    
+    .error-icon {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_3XL};
+        min-width: 40px;
+        text-align: center;
+    }}}}}}}}}}}}}}}}
+    
+    .error-content h3 {{{{{{{{{{{{{{{{
+        color: {ERROR_700};
+        margin-top: 0;
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .error-content p {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_3};
+    }}}}}}}}}}}}}}}}
+    
+    .error-content ul {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_4};
+        color: {NEUTRAL_700};
+    }}}}}}}}}}}}}}}}
+    
+    .error-action {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {ERROR_700} !important;
+    }}}}}}}}}}}}}}}}
+
+    /* Streamlit Inputs */
+    .stTextInput, .stDateInput, .stSelectbox {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .stTextInput input, .stDateInput input, .stSelectbox > div[data-baseweb="select"] > div {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_LG} !important;
+        border: 1px solid {NEUTRAL_200} !important;
+        background-color: #FFFFFF !important;
+        padding: {SPACING_2} {SPACING_3} !important;
+        color: {NEUTRAL_800} !important;
+    }}}}}}}}}}}}}}}}
+    
+    /* Placeholder text color */
+    ::placeholder {{{{{{{{{{{{{{{{ 
+        color: {NEUTRAL_400} !important;
+        opacity: 1; 
+    }}}}}}}}}}}}}}}}
+    
+    /* Streamlit Alerts */
+    .stAlert {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4} {SPACING_6};
+        border: 1px solid;
+    }}}}}}}}}}}}}}}}
+    
+    /* Success Alert */
+    div[data-testid="stAlert"] [data-testid="stNotification"] {{{{{{{{{{{{{{{{
+        border-color: {SUCCESS_500} !important;
+        background-color: {SUCCESS_100} !important;
+        color: {SUCCESS_700} !important;
+    }}}}}}}}}}}}}}}}
+    
+    /* Error Alert */
+    div[data-testid="stAlert"][width="initial"] > div {{{{{{{{{{{{{{{{
+        border-color: {ERROR_500} !important;
+        background-color: {ERROR_100} !important;
+        color: {ERROR_700} !important;
+    }}}}}}}}}}}}}}}}
+    
+    /* Info Alert */
+    div[data-testid="stInfo"] {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4} {SPACING_6};
+        background-color: {PRIMARY_50} !important;
+        color: {PRIMARY_800} !important;
+        border: 1px solid {PRIMARY_100} !important;
+    }}}}}}}}}}}}}}}}
+    
+    /* Warning Alert */
+    div[data-testid="stWarning"] {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4} {SPACING_6};
+        background-color: {WARNING_100} !important;
+        color: {WARNING_700} !important;
+        border: 1px solid {WARNING_100} !important;
+    }}}}}}}}}}}}}}}}
+
+    /* Card styling */
+    .card {{{{{{{{{{{{{{{{
+        border-radius: {BORDER_RADIUS_XL};
+        background-color: #FFFFFF;
+        border: 1px solid {NEUTRAL_200};
+        padding: {SPACING_6};
+        margin-bottom: {SPACING_4};
+        box-shadow: {SHADOW_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .metric-card {{{{{{{{{{{{{{{{
+        text-align: center;
+        color: {NEUTRAL_800};
+    }}}}}}}}}}}}}}}}
+    
+    .metric-value {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_4XL};
+        font-weight: {FONT_WEIGHT_BOLD};
+        color: {PRIMARY_800};
+        margin-top: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    /* Sidebar Styling */
+    div[data-testid="stSidebarUserContent"] {{{{{{{{{{{{{{{{
+        background-color: #FFFFFF;
+        padding: {SPACING_6} !important;
+    }}}}}}}}}}}}}}}}
+    
+    div[data-testid="stSidebarUserContent"] h1 {{{{{{{{{{{{{{{{
+        color: {PRIMARY_800} !important;
+        font-size: {FONT_SIZE_2XL};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    /* Animations */
+    @keyframes fadeIn {{{{{{{{{{{{{{{{
+        from {{{{{{{{{{{{{{{{ opacity: 0; transform: translateY(10px); }}}}}}}}}}}}}}}}
+        to {{{{{{{{{{{{{{{{ opacity: 1; transform: translateY(0); }}}}}}}}}}}}}}}}
+    }}}}}}}}}}}}}}}}
+
+    .animate-fade-in {{{{{{{{{{{{{{{{
+        animation: fadeIn 0.5s ease forwards;
+    }}}}}}}}}}}}}}}}
+    
+    /* Accessibility improvements */
+    .screen-reader-only {{{{{{{{{{{{{{{{
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+    }}}}}}}}}}}}}}}}
+    </style>
+    """
+
+def get_hr_app_css():
+    """Returns additional CSS specific to the HR application"""
+    return f"""
+    <style>
+    /* Enhanced Dashboard Header */
+    .dashboard-header {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+    
+    .dashboard-header h1 {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_4XL};
+        color: {PRIMARY_800};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .dashboard-subtitle {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_LG};
+        color: {NEUTRAL_600};
+        max-width: 800px;
+    }}}}}}}}}}}}}}}}
+    
+    /* Sidebar Enhancements */
+    .sidebar-header {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .sidebar-header h3 {{{{{{{{{{{{{{{{
+        color: {PRIMARY_800};
+        border-bottom: 2px solid {PRIMARY_200};
+        padding-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    /* Enhanced Interview List Styling */
+    .filter-results {{{{{{{{{{{{{{{{
+        margin: {SPACING_3} 0;
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_600};
+        padding: {SPACING_2} {SPACING_3};
+        background-color: {NEUTRAL_50};
+        border-radius: {BORDER_RADIUS_LG};
+        display: inline-block;
+    }}}}}}}}}}}}}}}}
+    
+    .result-count {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_BOLD};
+        color: {PRIMARY_700};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-card {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+        margin-bottom: {SPACING_3};
+        border: 1px solid {NEUTRAL_200};
+        transition: all 0.2s ease;
+        box-shadow: {SHADOW_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-header {{{{{{{{{{{{{{{{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-name {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {NEUTRAL_900};
+        font-size: {FONT_SIZE_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-status {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XS};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: white;
+        padding: {SPACING_1} {SPACING_2};
+        border-radius: 12px;
+        text-transform: uppercase;
+    }}}}}}}}}}}}}}}}
+    
+    .interview-meta {{{{{{{{{{{{{{{{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_500};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-details {{{{{{{{{{{{{{{{
+        display: flex;
+        flex-direction: column;
+        gap: {SPACING_1};
+    }}}}}}}}}}}}}}}}
+    
+    .department-position {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_700};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-date {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_500};
+        display: flex;
+        align-items: center;
+        gap: {SPACING_1};
+    }}}}}}}}}}}}}}}}
+    
+    .date-icon {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_400};
+    }}}}}}}}}}}}}}}}
+    
+    .interview-sentiment {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XL};
+    }}}}}}}}}}}}}}}}
+    
+    /* Pagination styling */
+    .pagination-info {{{{{{{{{{{{{{{{
+        text-align: center;
+        color: {NEUTRAL_600};
+        font-size: {FONT_SIZE_SM};
+        padding: {SPACING_1} 0;
+    }}}}}}}}}}}}}}}}
+    
+    .pagination-bottom {{{{{{{{{{{{{{{{
+        margin-top: {SPACING_4};
+        padding-top: {SPACING_3};
+        border-top: 1px solid {NEUTRAL_200};
+    }}}}}}}}}}}}}}}}
+    
+    /* Empty State */ 
+    .dashboard-empty-state {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: {BORDER_RADIUS_XL};
+        padding: {SPACING_8};
+        text-align: center;
+        border: 1px solid {NEUTRAL_200};
+        box-shadow: {SHADOW_SM};
+        margin: {SPACING_6} 0;
+    }}}}}}}}}}}}}}}}
+    
+    .empty-state-icon {{{{{{{{{{{{{{{{
+        font-size: 48px;
+        margin-bottom: {SPACING_4};
+        color: {PRIMARY_500};
+    }}}}}}}}}}}}}}}}
+    
+    .dashboard-empty-state h2 {{{{{{{{{{{{{{{{
+        color: {PRIMARY_800};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .dashboard-empty-state p {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_600};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .dashboard-empty-state ul {{{{{{{{{{{{{{{{
+        text-align: left;
+        max-width: 450px;
+        margin: 0 auto;
+        margin-bottom: {SPACING_6};
+        color: {NEUTRAL_600};
+    }}}}}}}}}}}}}}}}
+    
+    .empty-state-action {{{{{{{{{{{{{{{{
+        margin-top: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .empty-state-action p {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {PRIMARY_700};
+    }}}}}}}}}}}}}}}}
+
+    /* Metrics Row */
+    .metrics-row {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: {BORDER_RADIUS_XL};
+        padding: {SPACING_4};
+        margin-bottom: {SPACING_6};
+        border: 1px solid {NEUTRAL_200};
+        box-shadow: {SHADOW_SM};
+    }}}}}}}}}}}}}}}}
+    
+    /* Enhanced Filter Controls */
+    div[data-testid="stExpander"] {{{{{{{{{{{{{{{{
+        border: 1px solid {NEUTRAL_200};
+        border-radius: {BORDER_RADIUS_LG};
+        background-color: white;
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    div[data-testid="stExpander"] > div:first-child {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_50};
+        border-radius: {BORDER_RADIUS_LG} {BORDER_RADIUS_LG} 0 0;
+        padding: {SPACING_2} {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    /* Enhanced Tabs */
+    div[data-testid="stTabs"] button[role="tab"] {{{{{{{{{{{{{{{{
+        background-color: transparent;
+        border-radius: {BORDER_RADIUS_LG} {BORDER_RADIUS_LG} 0 0;
+        font-size: {FONT_SIZE_SM};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {NEUTRAL_600};
+        padding: {SPACING_2} {SPACING_4};
+        border: none;
+    }}}}}}}}}}}}}}}}
+    
+    div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {{{{{{{{{{{{{{{{
+        background-color: white;
+        color: {PRIMARY_700};
+        border-top: 2px solid {PRIMARY_600};
+    }}}}}}}}}}}}}}}}
+    
+    div[data-testid="stTabs"] div[role="tabpanel"] {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: 0 0 {BORDER_RADIUS_LG} {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    /* Dashboard Cards */
+    
+    /* Main navigation styling */
+    .navigation-container {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_6};
+        background-color: white;
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_2};
+        border: 1px solid {NEUTRAL_200};
+        box-shadow: {SHADOW_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .navigation-tabs {{{{{{{{{{{{{{{{
+        display: flex;
+        gap: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    /* Hide default Streamlit sidebar navigation */
+    section[data-testid="stSidebar"] {{{{{{{{{{{{{{{{
+        display: none !important;
+    }}}}}}}}}}}}}}}}
+    
+    .dashboard-card {{{{{{{{{{{{{{{{
+        background-color: #FFFFFF;
+        border-radius: {BORDER_RADIUS_XL};
+        padding: {SPACING_6};
+        border: 1px solid {NEUTRAL_200};
+        box-shadow: {SHADOW_SM};
+        height: 100%;
+    }}}}}}}}}}}}}}}}
+    
+    /* login-card enhancements */
+    .login-card {{{{{{{{{{{{{{{{
+        background-color: #FFFFFF;
+        border-radius: {BORDER_RADIUS_XL};
+        padding: {SPACING_8};
+        box-shadow: {SHADOW_MD};
+        border: 1px solid {NEUTRAL_200};
+        max-width: 480px;
+        margin: 0 auto;
+        margin-top: {SPACING_16};
+    }}}}}}}}}}}}}}}}
+    
+    .brand-header {{{{{{{{{{{{{{{{
+        text-align: center;
+        margin-bottom: {SPACING_8};
+    }}}}}}}}}}}}}}}}
+    
+    .brand-header .app-logo {{{{{{{{{{{{{{{{
+        font-size: 72px;
+        margin-bottom: {SPACING_4};
+        color: {PRIMARY_600};
+    }}}}}}}}}}}}}}}}
+    
+    .brand-header h1 {{{{{{{{{{{{{{{{
+        color: {PRIMARY_900};
+        font-size: {FONT_SIZE_3XL};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .brand-header .subtitle {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_600};
+        font-size: {FONT_SIZE_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .welcome-text {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_600};
+        text-align: center;
+        margin-bottom: {SPACING_6};
+        font-size: {FONT_SIZE_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .login-help {{{{{{{{{{{{{{{{
+        text-align: center;
+        margin-top: {SPACING_4};
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_500};
+    }}}}}}}}}}}}}}}}
+    
+    .login-help a {{{{{{{{{{{{{{{{
+        color: {PRIMARY_600};
+        text-decoration: none;
+    }}}}}}}}}}}}}}}}
+    
+    .login-help a:hover {{{{{{{{{{{{{{{{
+        text-decoration: underline;
+    }}}}}}}}}}}}}}}}
+    
+    /* Accessibility Improvements */
+    @media (prefers-reduced-motion: reduce) {{{{{{{{{{{{{{{{
+        * {{{{{{{{{{{{{{{{
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }}}}}}}}}}}}}}}}
+    }}}}}}}}}}}}}}}}
+    
+    /* High contrast mode toggle styles */
+    .high-contrast-toggle {{{{{{{{{{{{{{{{
+        display: flex;
+        align-items: center;
+        gap: {SPACING_2};
+        margin-top: {SPACING_4};
+        padding: {SPACING_2} {SPACING_3};
+        background-color: {NEUTRAL_100};
+        border-radius: {BORDER_RADIUS_LG};
+        font-size: {FONT_SIZE_SM};
+    }}}}}}}}}}}}}}}}
+    
+    /* High contrast mode styles */
+    .high-contrast body, 
+    .high-contrast [class*="st-"] {{{{{{{{{{{{{{{{
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+    }}}}}}}}}}}}}}}}
+    
+    .high-contrast .card,
+    .high-contrast .dashboard-card,
+    .high-contrast .metrics-row,
+    .high-contrast .interview-card {{{{{{{{{{{{{{{{
+        background-color: #222222 !important;
+        border: 2px solid #FFFFFF !important;
+    }}}}}}}}}}}}}}}}
+    
+    .high-contrast .stButton > button {{{{{{{{{{{{{{{{
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        border: 2px solid #FFFFFF !important;
+    }}}}}}}}}}}}}}}}
+    
+    .high-contrast a {{{{{{{{{{{{{{{{
+        color: #3B82F6 !important;
+        text-decoration: underline !important;
+    }}}}}}}}}}}}}}}}
+
+    /* Enhanced Reports Styling */
+    .reports-header {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+    
+    .reports-header h1 {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_4XL};
+        color: {PRIMARY_800};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .reports-description {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_LG};
+        color: {NEUTRAL_600};
+        max-width: 800px;
+    }}}}}}}}}}}}}}}}
+    
+    .report-section {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_6};
+        margin-bottom: {SPACING_6};
+        border: 1px solid {NEUTRAL_200};
+        box-shadow: {SHADOW_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .report-title {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .report-title h2 {{{{{{{{{{{{{{{{
+        color: {PRIMARY_800};
+        font-size: {FONT_SIZE_2XL};
+        margin-bottom: {SPACING_1};
+    }}}}}}}}}}}}}}}}
+    
+    .report-subtitle {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_600};
+        font-size: {FONT_SIZE_BASE};
+    }}}}}}}}}}}}}}}}
+    
+    .date-range-display {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_100};
+        padding: {SPACING_2} {SPACING_4};
+        border-radius: {BORDER_RADIUS_MD};
+        display: inline-block;
+        margin-bottom: {SPACING_4};
+        color: {NEUTRAL_700};
+        font-size: {FONT_SIZE_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .sentiment-insight {{{{{{{{{{{{{{{{
+        display: flex;
+        padding: {SPACING_4};
+        border-radius: {BORDER_RADIUS_LG};
+        margin: {SPACING_4} 0;
+        align-items: flex-start;
+        gap: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .sentiment-insight.positive {{{{{{{{{{{{{{{{
+        background-color: {SUCCESS_100};
+        border: 1px solid {SUCCESS_500};
+    }}}}}}}}}}}}}}}}
+    
+    .sentiment-insight.neutral {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_100};
+        border: 1px solid {NEUTRAL_400};
+    }}}}}}}}}}}}}}}}
+    
+    .sentiment-insight.negative {{{{{{{{{{{{{{{{
+        background-color: {ERROR_100};
+        border: 1px solid {ERROR_500};
+    }}}}}}}}}}}}}}}}
+    
+    .insight-icon {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XL};
+        min-width: 24px;
+    }}}}}}}}}}}}}}}}
+    
+    .insight-content {{{{{{{{{{{{{{{{
+        flex: 1;
+    }}}}}}}}}}}}}}}}
+    
+    .insight-title {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        margin-bottom: {SPACING_1};
+        color: {NEUTRAL_900};
+    }}}}}}}}}}}}}}}}
+    
+    .insight-text {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_700};
+        font-size: {FONT_SIZE_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .insight-box {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_50};
+        border: 1px solid {PRIMARY_200};
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+        margin: {SPACING_4} 0;
+    }}}}}}}}}}}}}}}}
+    
+    .insight-alert {{{{{{{{{{{{{{{{
+        display: flex;
+        padding: {SPACING_4};
+        border-radius: {BORDER_RADIUS_LG};
+        margin: {SPACING_4} 0;
+        align-items: flex-start;
+        gap: {SPACING_4};
+        background-color: {WARNING_100};
+        border: 1px solid {WARNING_500};
+    }}}}}}}}}}}}}}}}
+    
+    .insight-alert.positive {{{{{{{{{{{{{{{{
+        background-color: {SUCCESS_100};
+        border: 1px solid {SUCCESS_500};
+    }}}}}}}}}}}}}}}}
+    
+    .insight-alert.negative {{{{{{{{{{{{{{{{
+        background-color: {ERROR_100};
+        border: 1px solid {ERROR_500};
+    }}}}}}}}}}}}}}}}
+    
+    .findings-title {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XL};
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {PRIMARY_800};
+        margin: {SPACING_4} 0 {SPACING_3} 0;
+        padding-bottom: {SPACING_2};
+        border-bottom: 1px solid {NEUTRAL_200};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-card {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+        height: 100%;
+        box-shadow: {SHADOW_SM};
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }}}}}}}}}}}}}}}}
+    
+    .finding-card.positive {{{{{{{{{{{{{{{{
+        border-top: 4px solid {SUCCESS_500};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-card.negative {{{{{{{{{{{{{{{{
+        border-top: 4px solid {ERROR_500};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-header {{{{{{{{{{{{{{{{
+        display: flex;
+        gap: {SPACING_2};
+        align-items: center;
+        margin-bottom: {SPACING_3};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-icon {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XL};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-label {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {NEUTRAL_700};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-value {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_LG};
+        font-weight: {FONT_WEIGHT_BOLD};
+        color: {NEUTRAL_900};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .finding-metric {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_2XL};
+        font-weight: {FONT_WEIGHT_BOLD};
+        color: {PRIMARY_700};
+    }}}}}}}}}}}}}}}}
+    
+    .report-date-selector {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_50};
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+        margin-bottom: {SPACING_4};
+        border: 1px solid {NEUTRAL_200};
+    }}}}}}}}}}}}}}}}
+    
+    .selector-label {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {NEUTRAL_700};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .export-option-title {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {NEUTRAL_700};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .export-info {{{{{{{{{{{{{{{{
+        display: flex;
+        gap: {SPACING_2};
+        background-color: {NEUTRAL_50};
+        padding: {SPACING_3};
+        border-radius: {BORDER_RADIUS_MD};
+        border: 1px solid {NEUTRAL_200};
+    }}}}}}}}}}}}}}}}
+    
+    .export-info-icon {{{{{{{{{{{{{{{{
+        color: {PRIMARY_600};
+        font-size: {FONT_SIZE_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .export-info-text {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XS};
+        color: {NEUTRAL_600};
+        line-height: 1.4;
+    }}}}}}}}}}}}}}}}
+
+    /* Settings Page Styling */
+    .settings-header {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+    
+    .settings-header h1 {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_4XL};
+        color: {PRIMARY_800};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .settings-description {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_LG};
+        color: {NEUTRAL_600};
+        max-width: 800px;
+    }}}}}}}}}}}}}}}}
+    
+    .settings-section-title {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XL};
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {PRIMARY_800};
+        margin-bottom: {SPACING_4};
+        padding-bottom: {SPACING_2};
+        border-bottom: 1px solid {NEUTRAL_200};
+    }}}}}}}}}}}}}}}}
+    
+    .settings-card {{{{{{{{{{{{{{{{
+        background-color: white;
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_5};
+        margin-bottom: {SPACING_5};
+        border: 1px solid {NEUTRAL_200};
+        box-shadow: {SHADOW_SM};
+    }}}}}}}}}}}}}}}}
+    
+    .settings-card-title {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_LG};
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {NEUTRAL_900};
+        margin-bottom: {SPACING_3};
+    }}}}}}}}}}}}}}}}
+    
+    .settings-card-description {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_600};
+        font-size: {FONT_SIZE_SM};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .settings-subsection {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        color: {NEUTRAL_700};
+        margin: {SPACING_4} 0 {SPACING_2} 0;
+        padding-bottom: {SPACING_1};
+        border-bottom: 1px dashed {NEUTRAL_200};
+    }}}}}}}}}}}}}}}}
+    
+    .user-avatar {{{{{{{{{{{{{{{{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .avatar-circle {{{{{{{{{{{{{{{{
+        width: 80px;
+        height: 80px;
+        background-color: {PRIMARY_600};
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 36px;
+        font-weight: {FONT_WEIGHT_BOLD};
+    }}}}}}}}}}}}}}}}
+    
+    .user-details {{{{{{{{{{{{{{{{
+        padding: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .user-name {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_XL};
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {NEUTRAL_900};
+        margin-bottom: {SPACING_1};
+    }}}}}}}}}}}}}}}}
+    
+    .user-email {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_BASE};
+        color: {NEUTRAL_700};
+        margin-bottom: {SPACING_1};
+    }}}}}}}}}}}}}}}}
+    
+    .user-role {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_600};
+        background-color: {NEUTRAL_100};
+        padding: {SPACING_1} {SPACING_2};
+        border-radius: {BORDER_RADIUS_MD};
+        display: inline-block;
+    }}}}}}}}}}}}}}}}
+    </style>
+    """
+
+def get_employee_app_css():
+    """Returns additional CSS specific to the Employee application"""
+    return f"""
+    <style>
+    /* Enhanced Chat interface styling */
+    .chat-interface-header {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_700};
+        color: white;
+        padding: {SPACING_4};
+        border-radius: {BORDER_RADIUS_XL} {BORDER_RADIUS_XL} 0 0;
+        display: flex;
+        align-items: center;
+        margin-bottom: {SPACING_1};
+    }}}}}}}}}}}}}}}}
+    
+    .chat-bot-identity {{{{{{{{{{{{{{{{
+        display: flex;
+        align-items: center;
+        gap: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .chat-bot-avatar {{{{{{{{{{{{{{{{
+        font-size: 24px;
+    }}}}}}}}}}}}}}}}
+    
+    .chat-bot-name {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+    }}}}}}}}}}}}}}}}
+    
+    .messages-container {{{{{{{{{{{{{{{{
+        background-color: #FFFFFF;
+        border-radius: 0 0 {BORDER_RADIUS_XL} {BORDER_RADIUS_XL};
+        padding: {SPACING_4};
+        border: 1px solid {NEUTRAL_200};
+        border-top: none;
+        min-height: 400px;
+        max-height: 600px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .message {{{{{{{{{{{{{{{{
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: {SPACING_4};
+        max-width: 95%;
+    }}}}}}}}}}}}}}}}
+    
+    .message-avatar {{{{{{{{{{{{{{{{
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: {SPACING_2};
+        margin-left: {SPACING_2};
+        background-color: {NEUTRAL_100};
+    }}}}}}}}}}}}}}}}
+    
+    .bot-message {{{{{{{{{{{{{{{{
+        align-self: flex-start;
+    }}}}}}}}}}}}}}}}
+    
+    .user-message {{{{{{{{{{{{{{{{
+        align-self: flex-end;
+        flex-direction: row-reverse;
+        margin-left: auto;
+    }}}}}}}}}}}}}}}}
+    
+    .message-bubble {{{{{{{{{{{{{{{{
+        padding: {SPACING_3} {SPACING_4};
+        border-radius: {BORDER_RADIUS_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .bot-message .message-bubble {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_100};
+        border-left: 4px solid {PRIMARY_400};
+        color: {NEUTRAL_800};
+    }}}}}}}}}}}}}}}}
+    
+    .user-message .message-bubble {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_50};
+        border-left: 4px solid {PRIMARY_500};
+        color: {NEUTRAL_800};
+    }}}}}}}}}}}}}}}}
+    
+    .welcome-message {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_100};
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+        margin-bottom: {SPACING_4};
+        border-left: 4px solid {PRIMARY_600};
+    }}}}}}}}}}}}}}}}
+    
+    /* Progress display */
+    .progress-container {{{{{{{{{{{{{{{{
+        margin: {SPACING_4} 0;
+    }}}}}}}}}}}}}}}}
+    
+    .progress-bar-wrapper {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_200};
+        border-radius: {BORDER_RADIUS_FULL};
+        height: 8px;
+        overflow: hidden;
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .progress-bar {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_600};
+        height: 100%;
+        border-radius: {BORDER_RADIUS_FULL};
+        transition: width 0.5s ease;
+    }}}}}}}}}}}}}}}}
+    
+    .question-progress {{{{{{{{{{{{{{{{
+        display: flex;
+        justify-content: space-between;
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_600};
+    }}}}}}}}}}}}}}}}
+    
+    .question-counter {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_MEDIUM};
+    }}}}}}}}}}}}}}}}
+    
+    /* Chat input */
+    .chat-input-container {{{{{{{{{{{{{{{{
+        margin-top: {SPACING_4};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .chat-hint {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_600};
+        background-color: {NEUTRAL_50};
+        padding: {SPACING_3} {SPACING_4};
+        border-radius: {BORDER_RADIUS_LG};
+        margin-top: {SPACING_2};
+        border-left: 2px solid {WARNING_500};
+    }}}}}}}}}}}}}}}}
+    
+    .chat-hint span {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {WARNING_700};
+    }}}}}}}}}}}}}}}}
+    
+    /* Typing animation */
+    .typing-message .message-bubble {{{{{{{{{{{{{{{{
+        padding: {SPACING_2} {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .typing-animation {{{{{{{{{{{{{{{{
+        display: flex;
+        align-items: center;
+        height: 17px;
+    }}}}}}}}}}}}}}}}
+    
+    .typing-animation span {{{{{{{{{{{{{{{{
+        height: 8px;
+        width: 8px;
+        background-color: {NEUTRAL_400};
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+        animation: typing 1.5s infinite ease-in-out;
+    }}}}}}}}}}}}}}}}
+    
+    .typing-animation span:nth-child(1) {{{{{{{{{{{{{{{{
+        animation-delay: 0s;
+    }}}}}}}}}}}}}}}}
+    
+    .typing-animation span:nth-child(2) {{{{{{{{{{{{{{{{
+        animation-delay: 0.2s;
+    }}}}}}}}}}}}}}}}
+    
+    .typing-animation span:nth-child(3) {{{{{{{{{{{{{{{{
+        animation-delay: 0.4s;
+        margin-right: 0;
+    }}}}}}}}}}}}}}}}
+    
+    @keyframes typing {{{{{{{{{{{{{{{{
+        0% {{{{{{{{{{{{{{{{
+            transform: translateY(0px);
+            background-color: {NEUTRAL_400};
+        }}}}}}}}}}}}}}}}
+        25% {{{{{{{{{{{{{{{{
+            transform: translateY(-5px);
+            background-color: {NEUTRAL_600};
+        }}}}}}}}}}}}}}}}
+        50% {{{{{{{{{{{{{{{{
+            transform: translateY(0px);
+            background-color: {NEUTRAL_400};
+        }}}}}}}}}}}}}}}}
+    }}}}}}}}}}}}}}}}
+    
+    /* Welcome experience */
+    .welcome-container {{{{{{{{{{{{{{{{
+        background-color: #FFFFFF;
+        border-radius: {BORDER_RADIUS_XL};
+        padding: {SPACING_8};
+        box-shadow: {SHADOW_MD};
+        text-align: center;
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+    
+    .welcome-header {{{{{{{{{{{{{{{{
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+    
+    .welcome-header h1 {{{{{{{{{{{{{{{{
+        color: {PRIMARY_900};
+        font-size: {FONT_SIZE_3XL};
+        margin-bottom: {SPACING_2};
+    }}}}}}}}}}}}}}}}
+    
+    .company-name {{{{{{{{{{{{{{{{
+        color: {PRIMARY_600};
+        font-size: {FONT_SIZE_LG};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+    }}}}}}}}}}}}}}}}
+    
+    .welcome-card {{{{{{{{{{{{{{{{
+        background-color: {NEUTRAL_50};
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_6};
+        margin-bottom: {SPACING_6};
+        text-align: left;
+    }}}}}}}}}}}}}}}}
+    
+    .process-steps {{{{{{{{{{{{{{{{
+        display: flex;
+        flex-direction: column;
+        gap: {SPACING_4};
+        margin: {SPACING_6} 0;
+    }}}}}}}}}}}}}}}}
+    
+    .step {{{{{{{{{{{{{{{{
+        display: flex;
+        align-items: center;
+        gap: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .step-number {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_600};
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: {FONT_WEIGHT_BOLD};
+    }}}}}}}}}}}}}}}}
+    
+    .time-estimate {{{{{{{{{{{{{{{{
+        font-size: {FONT_SIZE_SM};
+        color: {NEUTRAL_500};
+        margin-top: {SPACING_4};
+        font-style: italic;
+    }}}}}}}}}}}}}}}}
+    
+    .start-button {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_600};
+        color: white;
+        padding: {SPACING_3} {SPACING_6};
+        border-radius: {BORDER_RADIUS_LG};
+        font-weight: {FONT_WEIGHT_MEDIUM};
+        margin-top: {SPACING_4};
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }}}}}}}}}}}}}}}}
+    
+    .start-button:hover {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_700};
+        transform: translateY(-2px);
+    }}}}}}}}}}}}}}}}
+    
+    /* Completion experience */
+    .completion-container {{{{{{{{{{{{{{{{
+        background-color: {SUCCESS_100};
+        border-radius: {BORDER_RADIUS_XL};
+        padding: {SPACING_8};
+        text-align: center;
+        border: 1px solid {SUCCESS_500};
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+    
+    .completion-header {{{{{{{{{{{{{{{{
+        color: {SUCCESS_700};
+        font-size: {FONT_SIZE_3XL};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .completion-icon {{{{{{{{{{{{{{{{
+        font-size: 48px;
+        color: {SUCCESS_500};
+        margin-bottom: {SPACING_4};
+    }}}}}}}}}}}}}}}}
+    
+    .completion-message {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_700};
+        font-size: {FONT_SIZE_LG};
+        max-width: 600px;
+        margin: 0 auto;
+        margin-bottom: {SPACING_6};
+    }}}}}}}}}}}}}}}}
+
+    /* Personalization Elements */
+    .personalization-banner {{{{{{{{{{{{{{{{
+        background-color: {PRIMARY_50};
+        border: 1px solid {PRIMARY_200};
+        border-radius: {BORDER_RADIUS_LG};
+        padding: {SPACING_4};
+        margin-bottom: {SPACING_6};
+        display: flex;
+        gap: {SPACING_4};
+        align-items: center;
+    }}}}}}}}}}}}}}}}
+    
+    .personalization-icon {{{{{{{{{{{{{{{{
+        font-size: 28px;
+        color: {PRIMARY_600};
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }}}}}}}}}}}}}}}}
+    
+    .personalization-content {{{{{{{{{{{{{{{{
+        flex: 1;
+    }}}}}}}}}}}}}}}}
+    
+    .personalization-title {{{{{{{{{{{{{{{{
+        font-weight: {FONT_WEIGHT_SEMIBOLD};
+        color: {PRIMARY_800};
+        margin-bottom: {SPACING_1};
+        font-size: {FONT_SIZE_LG};
+    }}}}}}}}}}}}}}}}
+    
+    .personalization-text {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_800};
+        font-size: {FONT_SIZE_SM};
+        line-height: 1.5;
+    }}}}}}}}}}}}}}}}
+    
+    .personalization-note {{{{{{{{{{{{{{{{
+        color: {NEUTRAL_600};
+        font-size: {FONT_SIZE_XS};
+        font-style: italic;
+        text-align: center;
+    }}}}}}}}}}}}}}}}
+    </style>
+    """ 

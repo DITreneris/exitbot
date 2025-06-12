@@ -24,17 +24,21 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
     return {"status": "ok", "message": "ExitBot API is running", "version": "1.0.0"}
+
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
 
+
 @app.get("/test")
 async def test():
     return {"status": "ok", "test": "successful"}
+
 
 # Run the application
 if __name__ == "__main__":
@@ -43,11 +47,6 @@ if __name__ == "__main__":
     print("Documentation: http://127.0.0.1:8000/docs")
     print("Test endpoint: http://127.0.0.1:8000/test")
     print("Health endpoint: http://127.0.0.1:8000/health")
-    
+
     # Use explicit IP binding with restricted host header check
-    uvicorn.run(
-        app, 
-        host="127.0.0.1",
-        port=8000,
-        log_level="info"
-    ) 
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")

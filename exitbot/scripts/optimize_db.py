@@ -8,20 +8,25 @@ This script applies database optimizations including:
 3. Providing recommendations for further optimization
 """
 import sys
-import os
-import logging
 import argparse
 from pathlib import Path
 
-# Add parent directory to path to import modules
+# Remove logging import from here
+# import logging
+
+# Add the parent directory to sys.path FIRST
 sys.path.append(str(Path(__file__).parent.parent))
 
+# NOW import other modules
+import logging
+import argparse
+from pathlib import Path
 from exitbot.database.database import SessionLocal
 from exitbot.database.query_optimization import (
-    setup_indexes, 
+    setup_indexes,
     explain_analyze_query,
     optimize_department_query,
-    optimize_exit_reason_query
+    optimize_exit_reason_query,
 )
 
 # Configure logging
@@ -30,10 +35,11 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler("db_optimization.log")
-    ]
+        logging.FileHandler("db_optimization.log"),
+    ],
 )
 logger = logging.getLogger("db_optimizer")
+
 
 def create_indexes():
     """Create database indexes for optimization"""
@@ -46,11 +52,12 @@ def create_indexes():
         logger.error(f"Error creating indexes: {str(e)}")
         return False
 
+
 def analyze_queries():
     """Analyze slow queries and provide optimization suggestions"""
     logger.info("Analyzing queries...")
     db = SessionLocal()
-    
+
     try:
         # Analyze the department query
         logger.info("Analyzing department query...")
@@ -59,7 +66,7 @@ def analyze_queries():
         logger.info("Department query analysis:")
         for line in dept_analysis:
             logger.info(f"  {line.get('plan_line', '')}")
-            
+
         # Analyze the exit reason query
         logger.info("Analyzing exit reason query...")
         reason_query = optimize_exit_reason_query(db)
@@ -67,7 +74,7 @@ def analyze_queries():
         logger.info("Exit reason query analysis:")
         for line in reason_analysis:
             logger.info(f"  {line.get('plan_line', '')}")
-            
+
         return True
     except Exception as e:
         logger.error(f"Error analyzing queries: {str(e)}")
@@ -75,35 +82,36 @@ def analyze_queries():
     finally:
         db.close()
 
+
 def main():
     """Main function to run optimizations"""
     parser = argparse.ArgumentParser(description="Optimize database performance")
     parser.add_argument(
-        "--indexes-only", 
-        action="store_true", 
-        help="Only create indexes without analyzing queries"
+        "--indexes-only",
+        action="store_true",
+        help="Only create indexes without analyzing queries",
     )
     parser.add_argument(
-        "--analyze-only", 
-        action="store_true", 
-        help="Only analyze queries without creating indexes"
+        "--analyze-only",
+        action="store_true",
+        help="Only analyze queries without creating indexes",
     )
     args = parser.parse_args()
-    
+
     logger.info("Starting database optimization")
-    
+
     success = True
-    
+
     # Create indexes if requested
     if not args.analyze_only:
         index_success = create_indexes()
         success = success and index_success
-        
+
     # Analyze queries if requested
     if not args.indexes_only:
         query_success = analyze_queries()
         success = success and query_success
-    
+
     if success:
         logger.info("Database optimization completed successfully")
         return 0
@@ -111,5 +119,6 @@ def main():
         logger.error("Database optimization completed with errors")
         return 1
 
+
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

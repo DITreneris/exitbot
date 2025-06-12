@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any, List
+from typing import Optional, List, Dict, Any
 
 """
 LLM Prompts and default interview questions for ExitBot
@@ -71,6 +71,7 @@ Guidelines for creating follow-up questions:
 Your follow-up question should be open-ended, specific to what the employee shared, and designed to elicit more detailed information.
 """
 
+
 def get_interview_prompt(
     current_question: str,
     employee_response: str,
@@ -79,13 +80,13 @@ def get_interview_prompt(
 ) -> str:
     """
     Generate a prompt for the interview bot
-    
+
     Args:
         current_question: The current question being asked
         employee_response: The employee's response to the current question
         question_history: Previous questions and responses
         employee_name: The name of the employee being interviewed
-        
+
     Returns:
         str: Formatted prompt for the LLM
     """
@@ -96,9 +97,9 @@ def get_interview_prompt(
             context += f"Previous question: {item.get('question', '')}\n"
             context += f"Employee response: {item.get('employee_response', '')}\n"
             context += f"Bot response: {item.get('bot_response', '')}\n\n"
-    
+
     name_context = f" with {employee_name}" if employee_name else ""
-    
+
     return f"""
     You are ExitBot, an HR assistant conducting an exit interview{name_context}. 
     Your goal is to collect meaningful feedback in a conversational way.
@@ -118,19 +119,18 @@ def get_interview_prompt(
     Your response:
     """
 
+
 def get_follow_up_prompt(
-    primary_question: str,
-    employee_response: str,
-    follow_up_count: int = 0
+    primary_question: str, employee_response: str, follow_up_count: int = 0
 ) -> str:
     """
     Generate a prompt to determine if a follow-up question is needed
-    
+
     Args:
         primary_question: The main question being asked
         employee_response: The employee's response
         follow_up_count: How many follow-ups have already been asked
-        
+
     Returns:
         str: Prompt for determining follow-up questions
     """
@@ -148,13 +148,14 @@ def get_follow_up_prompt(
     Your response:
     """
 
+
 def get_summary_prompt(responses: List[Dict[str, Any]]) -> str:
     """
     Generate a prompt to summarize exit interview findings
-    
+
     Args:
         responses: List of question/response pairs
-        
+
     Returns:
         str: Prompt for generating a summary
     """
@@ -162,7 +163,7 @@ def get_summary_prompt(responses: List[Dict[str, Any]]) -> str:
     for item in responses:
         context += f"Question: {item.get('question', '')}\n"
         context += f"Response: {item.get('employee_response', '')}\n\n"
-    
+
     return f"""
     You are an HR analyst summarizing the findings from an exit interview.
     
@@ -176,4 +177,4 @@ def get_summary_prompt(responses: List[Dict[str, Any]]) -> str:
     - Actionable feedback for the organization
     
     Format your response as bullet points.
-    """ 
+    """

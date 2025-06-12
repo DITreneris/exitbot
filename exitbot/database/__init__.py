@@ -3,17 +3,18 @@ from exitbot.database.models import User, Question, ExitInterview, Answer, UserR
 
 # Export all models and database utilities
 __all__ = [
-    "Base", 
-    "engine", 
-    "get_db", 
+    "Base",
+    "engine",
+    "get_db",
     "SessionLocal",
-    "User", 
-    "Question", 
-    "ExitInterview", 
+    "User",
+    "Question",
+    "ExitInterview",
     "Answer",
-    "UserRole"
+    "UserRole",
 ]
+
 
 # Initialize database (create tables)
 def init_db():
-    Base.metadata.create_all(bind=engine) 
+    Base.metadata.create_all(bind=engine)

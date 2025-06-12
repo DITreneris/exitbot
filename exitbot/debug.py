@@ -17,13 +17,15 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="ExitBot Debug API",
     description="Debug version of ExitBot API",
-    version="1.0.0"
+    version="1.0.0",
 )
+
 
 @app.get("/")
 async def root():
     """Root endpoint"""
     return {"status": "ok", "message": "Debug API is running"}
+
 
 @app.get("/api/test")
 async def test_endpoint():
@@ -31,11 +33,9 @@ async def test_endpoint():
     return {
         "status": "ok",
         "message": "Debug test endpoint is working",
-        "data": {
-            "test_id": 12345,
-            "is_functional": True
-        }
+        "data": {"test_id": 12345, "is_functional": True},
     }
+
 
 @app.get("/api/env")
 async def env_info():
@@ -44,20 +44,24 @@ async def env_info():
         "python_version": sys.version,
         "env_vars": {k: v for k, v in os.environ.items() if not k.startswith("_")},
         "sys_path": sys.path,
-        "cwd": os.getcwd()
+        "cwd": os.getcwd(),
     }
+
 
 @app.get("/api/routes")
 async def list_routes():
     """List all available routes"""
     routes = []
     for route in app.routes:
-        routes.append({
-            "path": route.path,
-            "name": route.name,
-            "methods": route.methods if hasattr(route, "methods") else None
-        })
+        routes.append(
+            {
+                "path": route.path,
+                "name": route.name,
+                "methods": route.methods if hasattr(route, "methods") else None,
+            }
+        )
     return {"routes": routes}
+
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -70,24 +74,21 @@ async def log_requests(request: Request, call_next):
     except Exception as e:
         logger.exception("Error processing request")
         return JSONResponse(
-            status_code=500,
-            content={"detail": f"Server error: {str(e)}"}
+            status_code=500, content={"detail": f"Server error: {str(e)}"}
         )
+
 
 if __name__ == "__main__":
     # Run a simple server
     port = 9000
     logger.info(f"Starting debug server on port {port}")
-    logger.info(f"Access the debug server at http://127.0.0.1:{port} or http://localhost:{port}")
-    logger.info(f"Available endpoints:")
-    logger.info(f"  - / (root)")
-    logger.info(f"  - /api/test")
-    logger.info(f"  - /api/env")
-    logger.info(f"  - /api/routes")
-    
-    uvicorn.run(
-        "debug:app",
-        host="0.0.0.0",
-        port=port,
-        log_level="debug"
-    ) 
+    logger.info(
+        f"Access the debug server at http://127.0.0.1:{port} or http://localhost:{port}"
+    )
+    logger.info("Available endpoints:")
+    logger.info("  - / (root)")
+    logger.info("  - /api/test")
+    logger.info("  - /api/env")
+    logger.info("  - /api/routes")
+
+    uvicorn.run("debug:app", host="0.0.0.0", port=port, log_level="debug")

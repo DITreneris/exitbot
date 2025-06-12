@@ -1,6 +1,10 @@
-from exitbot.app.schemas.auth import Token, TokenData
-from exitbot.app.schemas.interview import InterviewCreate, Interview, InterviewResponse, Message
-from exitbot.app.schemas.report import ReportCreate, Report
-from exitbot.app.schemas.user import User, UserCreate, UserUpdate
-
-# Schema initialization 
+# Schemas package
+# Remove all unused imports
+# from .interview import Interview, InterviewCreate, InterviewUpdate
+# from .message import Message, MessageCreate
+# from .question import Question, QuestionCreate
+# from .report import Report, ReportCreate
+# from .response import Response, ResponseCreate
+# from .user import User, UserCreate, UserUpdate
+# from .token import Token, TokenData
+# from .interview_template import InterviewTemplate, InterviewTemplateCreate, InterviewTemplateUpdate

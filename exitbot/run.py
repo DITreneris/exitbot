@@ -21,26 +21,28 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     logger.info("Starting ExitBot application...")
-    
+
     # Get environment variables or use defaults
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", "8000"))
     reload = os.getenv("RELOAD", "true").lower() == "true"
     workers = int(os.getenv("WORKERS", "1"))
     log_level = os.getenv("LOG_LEVEL", "info").lower()
-    
+
     logger.info(f"Server will run on {host}:{port}")
-    logger.info(f"Configuration: reload={reload}, workers={workers}, log_level={log_level}")
-    
+    logger.info(
+        f"Configuration: reload={reload}, workers={workers}, log_level={log_level}"
+    )
+
     # Start the server
     app_module = "exitbot.direct_app:app"  # Use the working direct application
     logger.info(f"Using app module: {app_module}")
-    
+
     uvicorn.run(
         app_module,
         host=host,
         port=port,
         reload=reload,
         workers=workers,
-        log_level=log_level
-    ) 
+        log_level=log_level,
+    )

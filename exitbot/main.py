@@ -32,12 +32,14 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(interview.router, prefix="/api/interviews", tags=["Interviews"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 
+
 @app.get("/", tags=["Health"])
 async def health_check():
     """
     Health check endpoint to verify the API is running.
     """
     return {"status": "ok", "message": "ExitBot API is running"}
+
 
 @app.get("/api/health", tags=["Health"])
 async def api_health_check():
@@ -46,6 +48,7 @@ async def api_health_check():
     """
     return {"status": "healthy"}
 
+
 def start():
     """Launched with `poetry run start` at root level or in Docker"""
     host = os.getenv("HOST", "0.0.0.0")
@@ -53,7 +56,7 @@ def start():
     log_level = os.getenv("LOG_LEVEL", "info").lower()
     workers = int(os.getenv("WORKERS", "1"))
     reload = os.getenv("ENVIRONMENT", "development").lower() == "development"
-    
+
     uvicorn.run(
         "exitbot.main:app",
         host=host,
@@ -63,5 +66,6 @@ def start():
         log_level=log_level,
     )
 
+
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

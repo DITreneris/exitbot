@@ -1,0 +1,36 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4 # Use v4
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4 # Use v4
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # Adjust path if requirements-test.txt is elsewhere
+        if [ -f exitbot/requirements-test.txt ]; then pip install -r exitbot/requirements-test.txt; fi
+        
+    - name: Check formatting with Black
+      run: black --check .
+    - name: Lint with Flake8
+      run: flake8 .
+      continue-on-error: true # Don't fail build yet, just report
+      
+    - name: Check types with MyPy
+      run: mypy exitbot/ # Adjust path to your source code if needed
+      continue-on-error: true # Don't fail build yet, just report
+    - name: Run Tests with Pytest
+      run: pytest
+ 

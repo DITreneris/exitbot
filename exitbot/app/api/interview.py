@@ -1,19 +1,26 @@
-from typing import List, Any, Optional
-from datetime import date
+from typing import Any
+from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from exitbot.app.db.base import get_db
-from exitbot.app.db.models import User, Interview, Question, Response
-from exitbot.app.schemas.interview import InterviewCreate, Interview, InterviewDetail, InterviewResponse, Message
+from exitbot.app.db.models import Interview
+from exitbot.app.schemas.interview import (
+    InterviewCreate,
+    InterviewDetail,
+    Message,
+    MessageSchema,
+)
 from exitbot.app.services.interview import InterviewService
 from exitbot.app.db import crud
 from exitbot.app.core.logging import get_logger
 from exitbot.app.services.reporting import ReportingService
+from exitbot.app.core import interview_questions
 
 logger = get_logger("api.interview")
 router = APIRouter()
+
 
 @router.post("/start", response_model=Interview)
 async def start_interview(
@@ -24,62 +31,115 @@ async def start_interview(
     Start a new exit interview
     """
     try:
+        # Create the interview
         interview = InterviewService.start_interview(
             db=db,
             employee_id=interview_data.employee_id,
-            exit_date=interview_data.exit_date
-        )
-        return interview
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error starting interview: {str(e)}"
+            exit_date=interview_data.exit_date,
         )
 
-@router.post("/{interview_id}/message", response_model=InterviewResponse)
+        # Get the first predefined question
+        first_question = interview_questions.get_question_by_order(1)
+        if not first_question:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to retrieve initial question",
+            )
+
+        # Store the initial bot message
+        crud.create_response(
+            db=db,
+            interview_id=interview.id,
+            employee_message=None,
+            bot_response=first_question["text"],
+            question_id=first_question["id"],
+        )
+
+        # Get the updated interview
+        interview = crud.get_interview(db, interview.id)
+
+        return interview
+    except Exception as e:
+        logger.error(f"Error starting interview: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error starting interview: {str(e)}",
+        )
+
+
+@router.post("/{interview_id}/message", response_model=MessageSchema)
 async def process_message(
     interview_id: int,
     message_data: Message,
     db: Session = Depends(get_db),
 ) -> Any:
     """
-    Process a message in an exit interview
+    Process a message in an exit interview using predefined questions
     """
-    # Verify interview exists
-    interview = crud.get_interview(db, interview_id)
-    if not interview:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Interview not found"
-        )
-    
-    # Validate message belongs to this interview
-    if message_data.interview_id != interview_id:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Message interview ID does not match URL"
-        )
-    
     try:
-        # Process the message
-        response = InterviewService.process_message(
+        # Verify interview exists
+        interview = crud.get_interview(db, interview_id)
+        if not interview:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Interview not found"
+            )
+
+        # Check if interview is already completed
+        if interview.status == "COMPLETED":
+            return {
+                "content": "This interview has already been completed. Thank you for your participation.",
+                "is_complete": True,
+            }
+
+        # Get previous responses to determine next question
+        previous_responses = crud.get_responses_by_interview(db, interview_id)
+        next_question_order = len(previous_responses) + 1
+
+        # Get next question
+        next_question = interview_questions.get_question_by_order(next_question_order)
+
+        # Store user's response
+        response_id = crud.create_response(
             db=db,
             interview_id=interview_id,
-            message=message_data.message,
-            question_id=message_data.question_id
+            employee_message=message_data.message,
+            bot_response=next_question["text"]
+            if next_question
+            else "Thank you for completing the interview.",
+            question_id=next_question["id"] if next_question else None,
         )
-        
-        return response
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
+
+        # If no more questions, mark interview as complete
+        if not next_question:
+            crud.update_interview(
+                db=db,
+                interview_id=interview_id,
+                update_dict={"status": "COMPLETED", "completed_at": datetime.now()},
+            )
+
+            # Invalidate any cached reports since we have new data
+            try:
+                ReportingService.invalidate_report_caches()
+            except Exception:
+                logger.warning("Failed to invalidate report caches")
+
+        # Return response
+        return {
+            "id": response_id,
+            "content": next_question["text"]
+            if next_question
+            else "Thank you for completing the exit interview. Your feedback is valuable to us.",
+            "is_complete": next_question is None,
+            "question_number": next_question_order if next_question else None,
+            "total_questions": interview_questions.get_question_count(),
+        }
     except Exception as e:
+        logger.error(f"Error processing message: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error processing message: {str(e)}"
+            detail=f"Error processing message: {str(e)}",
         )
+
 
 @router.put("/{interview_id}/complete", response_model=Interview)
 async def complete_interview(
@@ -93,27 +153,27 @@ async def complete_interview(
     interview = crud.get_interview(db, interview_id)
     if not interview:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Interview not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Interview not found"
         )
-    
+
     try:
         # Complete the interview
         completed_interview = InterviewService.complete_interview(db, interview_id)
-        
+
         # Invalidate any cached reports since we have new data
         try:
             ReportingService.invalidate_report_caches()
-        except:
+        except Exception:
             logger.warning("Failed to invalidate report caches")
-        
+
         return completed_interview
     except Exception as e:
         logger.error(f"Error completing interview: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error completing interview"
+            detail="Error completing interview",
         )
+
 
 @router.get("/{interview_id}", response_model=InterviewDetail)
 async def get_interview(
@@ -127,14 +187,13 @@ async def get_interview(
     interview = crud.get_interview(db, interview_id)
     if not interview:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Interview not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Interview not found"
         )
-    
+
     try:
         # Get responses
         responses = crud.get_responses_by_interview(db, interview_id)
-        
+
         # Create full response
         result = InterviewDetail(
             id=interview.id,
@@ -144,12 +203,12 @@ async def get_interview(
             status=interview.status,
             exit_date=interview.exit_date,
             created_at=interview.created_at,
-            responses=responses
+            responses=responses,
         )
-        
+
         return result
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error getting interview details: {str(e)}"
-        ) 
+            detail=f"Error getting interview details: {str(e)}",
+        )
